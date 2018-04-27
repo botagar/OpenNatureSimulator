@@ -1,4 +1,4 @@
-const path = require("path")
+const path = require('path')
 const webpack = require('webpack')
 
 var config = {
@@ -12,12 +12,12 @@ var config = {
   ],
 
   output: {
-    path: path.resolve(__dirname, "build"),
-    filename: "app.bundle.js"
+    path: path.resolve(__dirname, 'build'),
+    filename: 'app.bundle.js'
   },
 
   resolve: {
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: ['.ts', '.tsx', '.js']
   },
 
   devServer: {
@@ -25,7 +25,7 @@ var config = {
     port: 9001,
     compress: true,
     historyApiFallback: true,
-    contentBase: './',
+    contentBase: './'
   },
 
   module: {
@@ -79,6 +79,6 @@ var config = {
   plugins: [
     new webpack.NamedModulesPlugin()
   ]
-};
+}
 
 module.exports = config
