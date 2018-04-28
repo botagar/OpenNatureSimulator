@@ -4,8 +4,10 @@ import Seed from "../common/seed"
 import { Vector3, Scene, Mesh, SphereGeometry, MeshBasicMaterial } from "three"
 import DNA from "../common/dna"
 import Bud from "./bud"
+import Stem from "./stem"
 
 class PlantNode implements IGrowable, IRenderable {
+  parent: Stem
   nodeIndexFromBase: number
   buds: Bud[]
   dna: DNA
@@ -16,9 +18,10 @@ class PlantNode implements IGrowable, IRenderable {
   previousNode: PlantNode
   nextNode: PlantNode
 
-  constructor(dna: DNA, position: Vector3, nodesFromBase: number) {
-    this.dna = dna
-    this.nodeIndexFromBase = nodesFromBase
+  constructor(parent: Stem, position: Vector3) {
+    this.parent = parent
+    this.dna = parent.dna
+    this.nodeIndexFromBase = parent.stemsFromBase
     this.position = position
     this.buds = []
     
@@ -34,7 +37,7 @@ class PlantNode implements IGrowable, IRenderable {
       let x = this.position.x + (radius * Math.cos(budδθ + budδφ))
       let y = this.position.y
       let z = this.position.z + (radius * Math.sin(budδθ + budδφ))
-      let bud = new Bud(this.dna, new Vector3(x, y, z))
+      let bud = new Bud(this, new Vector3(x, y, z))
       this.buds.push(bud)
     }
   }

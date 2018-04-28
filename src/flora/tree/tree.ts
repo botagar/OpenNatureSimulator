@@ -15,7 +15,7 @@ class Tree extends Flora {
     let _seed = seed || new Seed(new Vector3, new DNA)
     this.dna = _seed.dna
     this.basePosition = _seed.position
-    let startingStem = Stem.FromSeed(_seed)
+    let startingStem = Stem.FromSeed(this, _seed)
     let startingBranch = new Branch(this.dna)
     startingBranch.AddStemToEnd(startingStem)
     this.branches = [startingBranch]

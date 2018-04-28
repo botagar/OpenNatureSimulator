@@ -5,10 +5,12 @@ import { Line3, Vector3 } from 'three'
 import IGrowable from "../common/IGrowable"
 import IRenderable from "../common/IRenderable"
 import Bud from "./bud"
-import DNA from "../common/dna";
+import DNA from "../common/dna"
 import { EventEmitter } from "events"
+import Branch from "./branch"
 
 class Stem extends EventEmitter implements IGrowable, IRenderable {
+  parent: any
   stemsFromBase: number
   dna: DNA
   node: PlantNode
@@ -17,27 +19,28 @@ class Stem extends EventEmitter implements IGrowable, IRenderable {
   growthLine: Line3
   growthTimeScale: number = 2 //seconds
 
-  static FromSeed = (seed: Seed): Stem => {
-    return new Stem(seed.position, seed.dna, 0)
+  static FromSeed = (caller: any, seed: Seed): Stem => {
+    return new Stem(caller, seed.position, 0)
   }
 
-  static NewStemAtEndOf = (stem: Stem): Stem => {
+  static NewStemAtEndOf = (caller: any, stem: Stem): Stem => {
     let startPos = stem.growthLine.end
-    let newStem = new Stem(startPos, stem.dna, stem.stemsFromBase + 1)
+    let newStem = new Stem(caller, startPos, stem.stemsFromBase + 1)
     newStem.AttachToEndOf(stem)
     return newStem
   }
 
-  protected constructor(startPosition: Vector3, dna: DNA, countFromBase: number) {
+  protected constructor(parent: any, startPosition: Vector3, countFromBase: number) {
     super()
-    this.dna = dna
+    this.parent = parent
+    this.dna = parent.dna
     this.stemsFromBase = countFromBase
     // Calculate new growth end point
     let projectedEndPosition = new Vector3
     let endPosition = startPosition.clone().add(new Vector3(0, 1, 0))
     this.growthLine = new Line3(startPosition, endPosition)
-    this.node = new PlantNode(this.dna, startPosition, this.stemsFromBase)
-    this.interNode = new InterNode(this.dna, this.growthLine, this.growthTimeScale, 8)
+    this.node = new PlantNode(this, startPosition)
+    this.interNode = new InterNode(this, 8)
     this.AttachEventListeners()
   }
 

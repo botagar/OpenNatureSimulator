@@ -29,7 +29,7 @@ class Branch implements IRenderable, IGrowable {
 
   eventHandlers = {
     CreateNewStem: (prevStem) => {
-      let newStem = Stem.NewStemAtEndOf(prevStem)
+      let newStem = Stem.NewStemAtEndOf(this, prevStem)
       newStem.on('CreateNewStem', this.eventHandlers['CreateNewStem'])
       this.stems.push(newStem)
     }
