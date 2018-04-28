@@ -3,7 +3,7 @@ import * as THREE from 'three'
 class Terrain {
   constructor() {}
 
-  GenerateTerrainMesh(): THREE.Mesh {
+  GenerateTerrainMesh = (): THREE.Mesh => {
     var geo = new THREE.PlaneBufferGeometry(2000, 2000, 8, 8)
     let material = new THREE.MeshLambertMaterial({
       color: 0x000F00,

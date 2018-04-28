@@ -1,7 +1,10 @@
 import * as THREE from 'three'
 import Terrain from './Terrain';
+import Sky from './Sky';
 
 class SceneComposer {
+  sun: THREE.DirectionalLight
+  sky: Sky
   terrain: Terrain
   cameraConfig: { fov: number; viewWidth: number; viewHeight: number; aspectRatio: number; nearPlane: number; farPlane: number; }
   scene: THREE.Scene
@@ -50,8 +53,25 @@ class SceneComposer {
     let axesHelper = new THREE.AxesHelper(5)
     this.scene.add(axesHelper)
 
+    this.sky = new Sky()
+    let skyMesh = await this.sky.GenerateSkyMesh()
+    this.scene.add(skyMesh)
+
     this.terrain = new Terrain()
     this.scene.add(this.terrain.GenerateTerrainMesh())
+
+    let hemiLight = new THREE.HemisphereLight(0x0000ff, 0xffffff, 1)
+    hemiLight.position.set(0, 50, 0)
+    this.scene.add(hemiLight)
+
+    this.sun = new THREE.DirectionalLight(0xffffff, 2)
+    this.sun.position.set(-25, 200, 150)
+    this.sun.lookAt(new THREE.Vector3())
+    this.sun.castShadow = true
+    this.sun.shadow.mapSize.width = 512
+    this.sun.shadow.mapSize.height = 512
+    this.sun.shadow.camera = new THREE.OrthographicCamera(-1000,1000,1000,-1000,0,1000)
+    this.scene.add(this.sun)
 
     this.camera.position.set(5, 15, 30)
     this.camera.lookAt(new THREE.Vector3(5, 5, 5))

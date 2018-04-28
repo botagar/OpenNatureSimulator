@@ -13,9 +13,9 @@ class World extends React.Component {
     super(props)
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     this.sceneComposer = new SceneComposer(this.canvas, this.mainComponent)
-    this.sceneComposer.InitialiseScene()
+    await this.sceneComposer.InitialiseScene()
     window.addEventListener('resize', this.sceneComposer.OnWindowResize, false)
 
     this.frameId = requestAnimationFrame(this.animate)
