@@ -1,8 +1,11 @@
+import { EventEmitter } from "events"
 import IGrowable from "../common/IGrowable"
 import IRenderable from "../common/IRenderable"
 import { Scene, CylinderGeometry, Line3, FrontSide, MeshLambertMaterial, Mesh, Geometry, Vector3 } from "three"
+import DNA from "../common/dna"
 
-class InterNode implements IGrowable, IRenderable {
+class InterNode extends EventEmitter implements IGrowable, IRenderable {
+  dna: DNA
   maxLength: number
   isAtMaxLength: boolean
   timeScale: number
@@ -12,7 +15,9 @@ class InterNode implements IGrowable, IRenderable {
   growthLine: Line3
   currentLength: number
 
-  constructor(growthLine: Line3, timeScale: number, faceCount: number) {
+  constructor(dna: DNA, growthLine: Line3, timeScale: number, faceCount: number) {
+    super()
+    this.dna = dna
     this.growthLine = growthLine
     this.timeScale = timeScale
     this.faceCount = faceCount
@@ -25,6 +30,7 @@ class InterNode implements IGrowable, IRenderable {
     if (this.isAtMaxLength) return null
     if (this.currentLength >= this.maxLength) {
       this.isAtMaxLength = true
+      this.emit('MaxLengthReached')
       return null
     }
     if (dt) {
@@ -43,7 +49,7 @@ class InterNode implements IGrowable, IRenderable {
   }
 
   private CreateMesh = () => {
-    let geometry = new CylinderGeometry(1, 1, 1, this.faceCount)
+    let geometry = new CylinderGeometry(1, 1, 0, this.faceCount)
     let verts = geometry.vertices
     let bottomCenterVect = verts[verts.length - 1]
     geometry.translate(0, -bottomCenterVect.y, 0)
@@ -63,7 +69,7 @@ class InterNode implements IGrowable, IRenderable {
     mesh.position.set(x, y, z)
     mesh.castShadow = true
     mesh.receiveShadow = true
-    this.currentLength = 1
+    this.currentLength = 0
     return mesh
   }
 
