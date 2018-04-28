@@ -74,7 +74,7 @@ class SceneComposer {
     this.scene.add(this.sun)
 
     this.camera.position.set(5, 15, 30)
-    this.camera.lookAt(new THREE.Vector3(5, 5, 5))
+    this.camera.lookAt(new THREE.Vector3(0, 15, 0))
     this.scene.add(this.camera)
   }
 

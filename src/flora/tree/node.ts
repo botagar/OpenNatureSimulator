@@ -24,19 +24,19 @@ class PlantNode implements IGrowable, IRenderable {
     this.nodeIndexFromBase = parent.stemsFromBase
     this.position = position
     this.buds = []
-    
+
     this.CreateBuds()
   }
 
   private CreateBuds = () => {
-    let numberOfBuds = 1
-    let budδθ = 2 * Math.PI / 4 * this.nodeIndexFromBase
+    let numberOfBuds = 2
+    let budδθ = 2 * Math.PI / 3 * this.nodeIndexFromBase
     let budδφ = 2 * Math.PI / numberOfBuds
     let radius = 1
     for (let i = 0; i < numberOfBuds; i++) {
-      let x = this.position.x + (radius * Math.cos(budδθ + budδφ))
+      let x = this.position.x + (radius * Math.cos(budδθ + (budδφ * i)))
       let y = this.position.y
-      let z = this.position.z + (radius * Math.sin(budδθ + budδφ))
+      let z = this.position.z + (radius * Math.sin(budδθ + (budδφ * i)))
       let bud = new Bud(this, new Vector3(x, y, z))
       this.buds.push(bud)
     }

@@ -99,7 +99,6 @@ class InterNode extends EventEmitter implements IGrowable, IRenderable {
       tempVert.applyAxisAngle(rotAxis, dθ * index)
       let { x, y, z } = tempVert
       vert.set(x, y, z)
-      // vert.sub(dY)
     })
     centerTopVert.sub(dY)
 

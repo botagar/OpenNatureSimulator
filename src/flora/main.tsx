@@ -25,7 +25,7 @@ class World extends React.Component {
     this.testTree.PrepareRender(this.sceneComposer.scene, 0)
     this.lastRenderTime = performance.now()
     this.frameId = requestAnimationFrame(this.animate)
-    setTimeout(this.logic, 1000)
+    // setTimeout(this.logic, 1000)
   }
 
   componentWillUnmount() {

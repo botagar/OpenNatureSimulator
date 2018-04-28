@@ -1,6 +1,5 @@
 import Seed from "../common/seed"
 import { Vector3 } from "three"
-import Branch from "./branch"
 import Stem from "./stem"
 import Flora from "../common/flora";
 import DNA from "../common/dna";
@@ -8,25 +7,43 @@ import DNA from "../common/dna";
 class Tree extends Flora {
   dna: DNA
   basePosition: Vector3
-  branches: Branch[]
+  stems: Stem[]
   
   constructor(seed?: Seed) {
     super()
+    this.stems = []
     let _seed = seed || new Seed(new Vector3, new DNA)
     this.dna = _seed.dna
     this.basePosition = _seed.position
     let startingStem = Stem.FromSeed(this, _seed)
-    let startingBranch = new Branch(this.dna)
-    startingBranch.AddStemToEnd(startingStem)
-    this.branches = [startingBranch]
+    startingStem.on('CreateNewStem', this.eventHandlers['CreateNewStem'])
+    this.stems.push(startingStem)
+  }
+
+  AddStemToEnd(newStem: Stem) {
+    let leadingStem = this.stems.find(stem => stem.node.nextNode == null)
+    if (leadingStem ) newStem.AttachToEndOf(leadingStem)
+    newStem.on('CreateNewStem', this.eventHandlers['CreateNewStem'])
+    this.stems.push(newStem)
+  }
+
+  eventHandlers = {
+    CreateNewStem: (prevStem) => {
+      let newStem = Stem.NewStemAtEndOf(this, prevStem)
+      newStem.on('CreateNewStem', this.eventHandlers['CreateNewStem'])
+      this.stems.push(newStem)
+    }
   }
   
   PrepareRender = (scene: THREE.Scene, deltaTime: number) => {
-    this.branches.forEach(branch => branch.PrepareRender(scene, deltaTime))
+    this.stems.forEach(stem => stem.PrepareRender(scene, deltaTime))
   }
   
   ProcessLogic = () => {
-    this.branches.forEach(branch => branch.ProcessLogic())
+    //Sugar pass
+
+    //Auxin pass
+    this.stems.forEach(stem => stem.ProcessLogic())
   }
 }
 

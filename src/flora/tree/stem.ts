@@ -7,10 +7,10 @@ import IRenderable from "../common/IRenderable"
 import Bud from "./bud"
 import DNA from "../common/dna"
 import { EventEmitter } from "events"
-import Branch from "./branch"
+import Tree from "./tree";
 
 class Stem extends EventEmitter implements IGrowable, IRenderable {
-  parent: any
+  parent: Tree
   stemsFromBase: number
   dna: DNA
   node: PlantNode
@@ -19,18 +19,18 @@ class Stem extends EventEmitter implements IGrowable, IRenderable {
   growthLine: Line3
   growthTimeScale: number = 2 //seconds
 
-  static FromSeed = (caller: any, seed: Seed): Stem => {
+  static FromSeed = (caller: Tree, seed: Seed): Stem => {
     return new Stem(caller, seed.position, 0)
   }
 
-  static NewStemAtEndOf = (caller: any, stem: Stem): Stem => {
+  static NewStemAtEndOf = (caller: Tree, stem: Stem): Stem => {
     let startPos = stem.growthLine.end
     let newStem = new Stem(caller, startPos, stem.stemsFromBase + 1)
     newStem.AttachToEndOf(stem)
     return newStem
   }
 
-  protected constructor(parent: any, startPosition: Vector3, countFromBase: number) {
+  protected constructor(parent: Tree, startPosition: Vector3, countFromBase: number) {
     super()
     this.parent = parent
     this.dna = parent.dna
