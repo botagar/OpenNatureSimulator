@@ -2,12 +2,15 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import styled from 'styled-components'
 import SceneComposer from "../three/SceneComposer";
+import Tree from "./tree/tree";
 
 class World extends React.Component {
+  testTree: Tree
   frameId: number
   mainComponent: HTMLHtmlElement
   canvas: HTMLCanvasElement
   sceneComposer: SceneComposer
+  lastRenderTime: number
 
   constructor(props) {
     super(props)
@@ -18,6 +21,9 @@ class World extends React.Component {
     await this.sceneComposer.InitialiseScene()
     window.addEventListener('resize', this.sceneComposer.OnWindowResize, false)
 
+    this.testTree = new Tree()
+    this.testTree.PrepareRender(this.sceneComposer.scene, 0)
+    this.lastRenderTime = performance.now()
     this.frameId = requestAnimationFrame(this.animate)
   }
 
@@ -26,7 +32,11 @@ class World extends React.Component {
   }
 
   animate = () => {
+    let timeNow = performance.now()
+    let dt = timeNow - this.lastRenderTime
+    this.testTree.PrepareRender(this.sceneComposer.scene, dt)
     this.sceneComposer.render()
+    this.lastRenderTime = timeNow
     this.frameId = requestAnimationFrame(this.animate)
   }
 

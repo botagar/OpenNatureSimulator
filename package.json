@@ -30,6 +30,7 @@
     "webpack-dev-server": "3.1.0"
   },
   "dependencies": {
+    "@types/random-seed": "^0.3.3",
     "@types/react": "^16.3.12",
     "@types/react-dom": "^16.0.5",
     "@types/three": "^0.91.10",
@@ -38,6 +39,7 @@
     "babel-polyfill": "^6.26.0",
     "color-lerp": "^1.0.5",
     "electron": "^1.8.4",
+    "random-seed": "^0.3.0",
     "react": "^16.3.2",
     "react-dom": "^16.3.2",
     "react-hot-loader": "^4.1.2",
