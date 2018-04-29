@@ -40,7 +40,18 @@ class Tree extends Flora {
   }
   
   ProcessLogic = () => {
+    let allEndStems = this.stems.filter(stem => stem.node.nextNode == null)
+    console.log(allEndStems)
     //Sugar pass
+    allEndStems.forEach((stem, index) => {
+      while(true) {
+        let nextStem = stem.node.previousNode.parent
+        if (!nextStem) {
+          console.log('Exit Traversal @ Level:', index)
+          break
+        }
+      }
+    })
 
     //Auxin pass
     this.stems.forEach(stem => stem.ProcessLogic())
