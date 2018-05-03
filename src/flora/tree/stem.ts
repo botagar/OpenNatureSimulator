@@ -15,12 +15,18 @@ class Stem extends EventEmitter implements IGrowable, IRenderable {
   dna: DNA
   node: PlantNode
   interNode: InterNode
-  buds: Bud
+  apexBud: Bud
   growthLine: Line3
   growthTimeScale: number = 2 //seconds
 
   static FromSeed = (caller: Tree, seed: Seed): Stem => {
-    return new Stem(caller, seed.position, 0)
+    let stem = new Stem(caller, seed.position, 0)
+    stem.node.properties.sugarLevel = seed.sugarLevel
+    let apexBud = new Bud(stem.node, stem.growthLine.start.clone(), 0)
+    apexBud.Properties.sugarLevel = seed.sugarLevel - stem.interNode.Properties.maxSugarFlowPerMin > 0
+      ? stem.interNode.Properties.maxSugarFlowPerMin : seed.sugarLevel
+    stem.apexBud = apexBud
+    return stem
   }
 
   static NewStemAtEndOf = (caller: Tree, stem: Stem): Stem => {
@@ -47,18 +53,43 @@ class Stem extends EventEmitter implements IGrowable, IRenderable {
   private AttachEventListeners() {
     this.interNode.on('MaxLengthReached', () => {
       this.emit('CreateNewStem', this)
+      this.node.emit('CreateSecondaryBuds')
     })
   }
 
-  AttachToEndOf(stem: Stem) {
-    stem.node.SetNextNode(this.node)
-    this.node.SetPreviousNode(stem.node)
-    this.node.auxinLevel = stem.node.auxinLevel
+  AttachToEndOf(prevStem: Stem) {
+    prevStem.node.SetNextNode(this.node)
+    this.node.SetPreviousNode(prevStem.node)
+    this.node.properties.auxinLevel = prevStem.node.properties.auxinLevel
+    this.apexBud = prevStem.apexBud
+    this.apexBud.parent = this.node
+    prevStem.apexBud = null
+    prevStem.node.buds.splice(prevStem.node.buds.findIndex(bud => bud == this.apexBud), 1)
+    this.node.buds.push(this.apexBud)
+  }
+
+  PropagateAuxinDownstream = () => {
+    if (this.apexBud) this.apexBud.ProduceAuxin()
+    let downstreamNode = this.node.previousNode
+    if (!downstreamNode) return null
+    let auxinAtDest = this.node.properties.auxinLevel * 0.6
+    if (auxinAtDest < 0.1) {
+      downstreamNode.SetAuxin(0)
+    } else {
+      downstreamNode.SetAuxin(auxinAtDest)
+      downstreamNode.parent.PropagateAuxinDownstream()
+    }
   }
 
   PrepareRender = (scene: THREE.Scene, deltaTime: number) => {
     this.node.PrepareRender(scene)
     this.interNode.PrepareRender(scene, deltaTime)
+    if (this.apexBud) {
+      this.apexBud.PrepareRender(scene, deltaTime)
+      let { x, y, z } = this.interNode.currentGrowth.end
+      this.apexBud.mesh.position.set(x, y, z)
+      this.apexBud.position.set(x, y, z)
+    }
   }
 
   ProcessLogic = () => {

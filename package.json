@@ -7,7 +7,7 @@
     "build": "webpack",
     "serve": "start webpack-dev-server && electron .",
     "start": "yarn webpack && electron .",
-    "lint": "standard",
+    "lint": "standard --ext .ts",
     "lint:fix": "standard --fix"
   },
   "keywords": [

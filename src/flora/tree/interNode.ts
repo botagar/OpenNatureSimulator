@@ -6,6 +6,7 @@ import DNA from "../common/dna"
 import Stem from "./stem"
 
 class InterNode extends EventEmitter implements IGrowable, IRenderable {
+  currentGrowth: Line3
   parent: Stem
   dna: DNA
   maxLength: number
@@ -22,15 +23,17 @@ class InterNode extends EventEmitter implements IGrowable, IRenderable {
     this.parent = parent
     this.dna = parent.dna
     this.growthLine = parent.growthLine
+    this.currentGrowth = new Line3(this.growthLine.start.clone(), this.growthLine.start.clone())
     this.timeScale = parent.growthTimeScale
     this.faceCount = faceCount
     this.maxLength = this.growthLine.distance()
     this.isAtMaxLength = false
   }
 
-  properties = {
+  Properties = {
     maxSugarFlowPerMin: 10,
-    maxWaterFlowPerMin: 10
+    maxWaterFlowPerMin: 10,
+    maxAuxinFlowPerMin: 10,
   }
 
   PrepareRender = (scene: Scene, dt: number) => {
@@ -43,9 +46,10 @@ class InterNode extends EventEmitter implements IGrowable, IRenderable {
     }
     if (dt) {
       let dY = (this.growthLine.distance() / this.timeScale) * (dt / 1000)
-      let desiredLength = new Vector3(0, this.currentLength + dY, 0)
-      this.UpdateMesh(desiredLength, 1, 1)
+      let targetLength = new Vector3(0, this.currentLength + dY, 0)
+      this.UpdateMesh(targetLength, 1, 1)
       this.currentLength += dY
+      this.currentGrowth.end.add(new Vector3(0, dY, 0))
     }
     if (this.isInScene) return null
     scene.add(this.mesh)
@@ -78,6 +82,7 @@ class InterNode extends EventEmitter implements IGrowable, IRenderable {
     mesh.castShadow = true
     mesh.receiveShadow = true
     this.currentLength = 0.01
+    this.currentGrowth.end.add(new Vector3(0, this.currentLength, 0))
     return mesh
   }
 

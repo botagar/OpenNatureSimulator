@@ -8,6 +8,10 @@ class DNA {
     this.rng = RandomSeed.create(seed || 'ONS')
     this.dna = this.rng.string(512)
   }
+
+  rand = (): number => {
+    return this.rng.random()
+  }
 }
 
 export default DNA

@@ -73,8 +73,8 @@ class SceneComposer {
     this.sun.shadow.camera = new THREE.OrthographicCamera(-1000,1000,1000,-1000,0,1000)
     this.scene.add(this.sun)
 
-    this.camera.position.set(5, 15, 30)
-    this.camera.lookAt(new THREE.Vector3(0, 15, 0))
+    this.camera.position.set(5, 15, 5)
+    this.camera.lookAt(new THREE.Vector3(0, 0, 0))
     this.scene.add(this.camera)
   }
 
