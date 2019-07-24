@@ -23,8 +23,8 @@ class Stem extends EventEmitter implements IGrowable, IRenderable {
     let stem = new Stem(caller, seed.position, 0)
     stem.node.properties.sugarLevel = seed.sugarLevel
     let apexBud = new Bud(stem.node, stem.growthLine.start.clone(), 0)
-    apexBud.Properties.sugarLevel = seed.sugarLevel - stem.interNode.Properties.maxSugarFlowPerMin > 0
-      ? stem.interNode.Properties.maxSugarFlowPerMin : seed.sugarLevel
+    apexBud.Properties.sugarLevel = seed.sugarLevel - stem.interNode.Properties.phloem > 0
+      ? stem.interNode.Properties.phloem : seed.sugarLevel
     stem.apexBud = apexBud
     return stem
   }

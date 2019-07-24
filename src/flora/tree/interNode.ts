@@ -31,9 +31,10 @@ class InterNode extends EventEmitter implements IGrowable, IRenderable {
   }
 
   Properties = {
-    maxSugarFlowPerMin: 10,
-    maxWaterFlowPerMin: 10,
-    maxAuxinFlowPerMin: 10,
+    phloem: 10, // Max Sugar Flow + Auxin flow
+    xylem: 10, // Max Water Flow
+    // maxAuxinFlowPerMin: 10,
+    auxinDiffuseRate: 2
   }
 
   PrepareRender = (scene: Scene, dt: number) => {

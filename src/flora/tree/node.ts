@@ -103,6 +103,7 @@ class PlantNode extends EventEmitter implements IGrowable, IRenderable {
   }
 
   ProcessLogic = () => {
+    this.leaves.forEach(leaf => leaf.ProcessLogic())
     this.buds.forEach(bud => bud.ProcessLogic())    
   }
 

@@ -28,7 +28,8 @@ class Leaf extends EventEmitter implements IRenderable, IGrowable {
   Properties = {
     width: 2,
     length: 4,
-    resolution: 2
+    resolution: 2,
+    stomata: 10 // Max Gas Flow (CO2, O2 etc...)
   }
 
   static FromBud = (bud: Bud) => {
@@ -36,7 +37,11 @@ class Leaf extends EventEmitter implements IRenderable, IGrowable {
     return leaf
   }
 
-  ProcessLogic = () => { }
+  ProcessLogic = () => {
+    // Do shader stuff to calc shadow map
+    let lightArea = 1.0
+    this.parent.properties.auxinLevel += 10 * lightArea
+  }
 
   PrepareRender = (scene: Scene, timeDelta?: number) => {
     if (!this.mesh) this.mesh = this.CreateVisibleMesh()

@@ -62,10 +62,10 @@ class Tree extends Flora {
   }
 
   private ProcessAuxinFromApexBud = (currentNode: PlantNode) => {
-    let { maxAuxinFlowPerMin } = currentNode.parent.interNode.Properties
+    let { phloem } = currentNode.parent.interNode.Properties
     let apexBud = currentNode.parent.apexBud
     apexBud.ProduceAuxin()
-    currentNode.InjectAuxin(apexBud.ExtractAuxin(maxAuxinFlowPerMin))
+    currentNode.InjectAuxin(apexBud.ExtractAuxin(phloem))
     apexBud.SetAuxin(currentNode.properties.auxinLevel)
   }
 }
